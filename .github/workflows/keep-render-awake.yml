@@ -1,0 +1,32 @@
+
+name: Keep Render Backend Awake
+
+on:
+  schedule:
+    # Runs every 10 minutes
+    - cron: "7,17,27,37,47,57 * * * *"
+
+  # Enable manual testing
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Ping Render Backend
+        run: |
+          echo "Checking Render backend..."
+
+          curl --fail --location \
+            --silent --show-error \
+            --retry 2 \
+            --max-time 90 \
+            "https://admin.indiawaterfalldatabase.com/health"
+
+          echo ""
+          echo "Render backend responded successfully."
